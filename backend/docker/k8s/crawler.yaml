@@ -1,0 +1,12 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: indexium-crawler-job
+spec:
+  template:
+    spec:
+      containers:
+        - name: crawler
+          image: indexium-api:latest
+          command: ["python", "scripts/seed_data.py"]
+      restartPolicy: OnFailure

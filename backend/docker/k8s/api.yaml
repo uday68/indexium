@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: indexium-api
+  labels:
+    app: indexium-api
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: indexium-api
+  template:
+    metadata:
+      labels:
+        app: indexium-api
+    spec:
+      containers:
+        - name: api
+          image: indexium-api:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8000
+          env:
+            - name: PORT
+              value: "8000"
+            - name: DEFAULT_RANKER
+              value: "bm25"
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "1Gi"
+              cpu: "1000m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: indexium-api-service
+spec:
+  type: ClusterIP
+  selector:
+    app: indexium-api
+  ports:
+    - port: 8000
+      targetPort: 8000
